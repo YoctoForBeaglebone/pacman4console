@@ -1,11 +1,17 @@
 /****************************************************
-* Pacman For Console V1.0                           *
-* By: Rev. Dr. Mike                                 *
+* Pacman For Console V1.1                           *
+* By: Rev. Dr. Mike Billars (doctormike@gmail.com   *
 * Date: 2006-06-09                                  *
+*                                                   *
+* Please see file COPYING for details on licensing  *
+*       and redistribution of this program          *
+*                                                   *
 ****************************************************/
 
 #include <stdio.h>
 #include <curses.h>
+#include <string.h>
+#include <stdlib.h>
 #include <sys/timeb.h>
 #include "pacman.h"
 
@@ -277,7 +283,7 @@ void InitCurses() {
 	init_pair(Ghost2,    COLOR_CYAN,    COLOR_BLACK);
 	init_pair(Ghost3,    COLOR_MAGENTA, COLOR_BLACK);
 	init_pair(Ghost4,    COLOR_YELLOW,  COLOR_BLACK);
-	init_pair(BlueGhost, COLOR_BLUE,    COLOR_BLACK);
+	init_pair(BlueGhost, COLOR_BLUE,    COLOR_RED);
 	init_pair(Pacman,    COLOR_YELLOW,  COLOR_BLACK);
 }
 

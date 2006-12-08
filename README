@@ -4,20 +4,22 @@ Pacman For Console V1.0
 Okay, so basically, I got tired of enabling flash on my browser so that I could play Pacman.
 That, and I was extremely bored one night. So I decided to make my own Pacman... for Console.
 
+Licenseing Information
+----------------------
+See COPYING for details on the GNU/GPL
 
 Compile/Install
 ---------------
 To make... gee... let's see. type 'make'
 To install... type 'make install'
-To run...type 'pacman [level_1-9_or_level_file]'
+To run...type 'pacman [level_#]'          where # is 1-9, for a premade level
+    OR   type 'pacmac [level_file_name]'  for a custom level you made
 To uninstall... type 'make uninstall'
-	i.e.:
-		make && su -c "make install"
-		pacman 3					# Start @ level 3
-		pacman /usr/share/pacman/Levels/level07.dat	# Play only level 7
-		echo "Hmm, I don't like it."
-		make uninstall # or make uninstall
-
+    i.e.:
+        make && su -c "make install"
+        pacman 3                                        # Start @ level 3
+        pacman /usr/share/pacman/Levels/level07.dat     # Play only level 7
+        echo ":-( I don't like it." && make uninstall   # Uninstall :-(
 
 The ASCII art:
 --------------
@@ -47,15 +49,6 @@ In case you don't know the rules of Pacman (rules I programmed in), here are mos
 13) Each character can only go in one X or Y direction at a time.
 
 To make your own levels, see Levels/README
-
-
-Future Releases:
-----------------
-1) Introduction screen
-2) Different sized mazes
-3) Level editor
-4) Multiplayer
-5) World domination
 
 
 Contact Information

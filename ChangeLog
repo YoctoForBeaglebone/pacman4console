@@ -1,0 +1,21 @@
+Pacman for Console
+
+2006-12-08 - 1.1
+
+    - fixed warning messages on GCC 4.1
+    - changed background color of blue ghosts to make them more visible
+
+2006-06-09 - 1.0
+
+    - initial release
+
+
+Future Releases:
+----------------
+1) Introduction screen
+2) Different sized mazes
+3) Level editor
+4) Multiplayer
+5) Extensive comments in code for beginner programmers
+6) World domination
+

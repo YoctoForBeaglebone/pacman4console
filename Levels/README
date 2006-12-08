@@ -1,30 +1,32 @@
-I'll probably eventually make a level editor if I get motivated enough
-But it's not too hard to edit with a text editor. Just some things you need to know:
+I'll probably eventually make a level editor if I get motivated enough. But
+it's not too hard to edit with a text editor. Just some things you need to
+know:
 
-
-1) Level size MUST be 29 lines long and MUST be 28 columns wide, separated by spaces.
+1) Level size MUST be 29 lines long and MUST be 28 columns wide, separated
+   by spaces.
 	(So file dimensions are 29 x 56, with one exception [see #2])
 
-2) The last line of the file (line 30) is a single number, 1 through 9 specifying
-	the difficulty. the higher the number, the less time invincibility lasts.
+2) The last line of the file (line 30) is a single number, 1 through 9
+   specifying the difficulty. the higher the number, the less time
+   invincibility lasts.
 
-3) The map is composed of integers. Therefore, any blank spaces in the map should
-	be replaced with 0. 
+3) The map is composed of integers. Therefore, any blank spaces in the map
+   should be replaced with 0.
 
 4) Each item in Pacman is represented by a number, 0 through 9
-	0 = Blank space		5 = Blinky
-	1 = Wall		6 = Inkey
-	2 = Pellet		7 = Clyde
-	3 = Power Up		8 = Pinky
-	4 = Spawning wall	9 = Pacman
+	0 = Blank space         5 = Blinky
+	1 = Wall                6 = Inkey
+	2 = Pellet              7 = Clyde
+	3 = Power Up            8 = Pinky
+	4 = Spawning wall       9 = Pacman
 
-5) The spawning wall is a wall that the ghosts can go through but Pacman cannot.
-	These can be used to make levels REALLY difficult. Check level 09
+5) The spawning wall is a wall that the ghosts can go through but Pacman
+   cannot. These can be used to make levels REALLY difficult. Check level 09
 
 6) Borders shouldn't need to be used, but give it a more Pacman-like feel.
-	If a ghost or Pacman are able to reach the very end of the border,
-	he they will be teleported to the opposite side of the level, both X and Y
-	just like in the regular game.
+   If a ghost or Pacman are able to reach the very end of the border, he will
+   be teleported to the opposite side of the level, both X and Y just like in
+   the regular game.
 
 7) See any included level__.dat file for examples.
 
