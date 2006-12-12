@@ -1,36 +1,40 @@
-I'll probably eventually make a level editor if I get motivated enough. But
-it's not too hard to edit with a text editor. Just some things you need to
-know:
+The included level editor (pacmanedit) isn't very difficult to learn to use,
+the status bar tells you everything you need to know but here are the keys
 
-1) Level size MUST be 29 lines long and MUST be 28 columns wide, separated
-   by spaces.
-	(So file dimensions are 29 x 56, with one exception [see #2])
+UDLR or WSAD:	Move cursor
+F:		Fills all blank spaces with pellets
+C:		Clears all pellets from board
+Q:		Saves and quits
+CTRL+C:		Quits WITHOUT saving
 
-2) The last line of the file (line 30) is a single number, 1 through 9
-   specifying the difficulty. the higher the number, the less time
-   invincibility lasts.
+Key		Inserts
+-----------------------
+0 or space:	Blank
+1:		Wall
+2:		Pellet
+3:		Powerup
+4:		Ghost/Spawning Wall
+5:		Blinky
+6:		Inkey
+7:		Clyde
+8:		Pinky
+9:		Pacman
 
-3) The map is composed of integers. Therefore, any blank spaces in the map
-   should be replaced with 0.
 
-4) Each item in Pacman is represented by a number, 0 through 9
-	0 = Blank space         5 = Blinky
-	1 = Wall                6 = Inkey
-	2 = Pellet              7 = Clyde
-	3 = Power Up            8 = Pinky
-	4 = Spawning wall       9 = Pacman
-
-5) The spawning wall is a wall that the ghosts can go through but Pacman
+*) The spawning wall is a wall that the ghosts can go through but Pacman
    cannot. These can be used to make levels REALLY difficult. Check level 09
 
-6) Borders shouldn't need to be used, but give it a more Pacman-like feel.
-   If a ghost or Pacman are able to reach the very end of the border, he will
+*) Borders shouldn't need to be used, but give it a more Pacman-like feel.
+   If a ghost or Pacman are able to reach the very edge of the board, he will
    be teleported to the opposite side of the level, both X and Y just like in
    the regular game.
 
-7) See any included level__.dat file for examples.
+*) See any included level__.dat file for examples.
+
+
+To edit a new or existing level, type:
+	$ pacmanedit new_or_old_level.dat
 
 
 To load a custom level, run pacman with the level file as the parameter:
-
-:$ pacman levelfile.dat
+	$ pacman levelfile.dat

@@ -1,7 +1,7 @@
 /****************************************************
-* Pacman For Console V1.1                           *
-* By: Rev. Dr. Mike Billars (doctormike@gmail.com   *
-* Date: 2006-06-09                                  *
+* Pacman For Console V1.2                           *
+* By: Rev. Dr. Mike Billars (doctormike@gmail.com)  *
+* Date: 2006-12-12                                  *
 *                                                   *
 * Please see file COPYING for details on licensing  *
 *       and redistribution of this program          *
@@ -15,19 +15,20 @@
 #include <sys/timeb.h>
 #include "pacman.h"
 
-void CheckCollision();					//See if Pacman and Ghosts collided
-void CheckScreenSize();					//Make sure resolution is at least 32x29
-void CreateWindows(int y, int x, int y0, int x0);	//Make ncurses windows
-void Delay();						//Slow down game for better control
-void DrawWindow();					//Refresh display
-void ExitProgram(char message[255]);			//Exit and display something
-void GetInput();					//Get user input
-void InitCurses();					//Start up ncurses
-void LoadLevel(char levelfile[100]);			//Load level into memory
-void MainLoop();					//Main program function
-void MoveGhosts();					//Update Ghosts' location
-void MovePacman();					//Update Pacman's location
-void PauseGame();					//Pause
+void IntroScreen();                                     //Show introduction screen and menu
+void CheckCollision();                                  //See if Pacman and Ghosts collided
+void CheckScreenSize();                                 //Make sure resolution is at least 32x29
+void CreateWindows(int y, int x, int y0, int x0);       //Make ncurses windows
+void Delay();                                           //Slow down game for better control
+void DrawWindow();                                      //Refresh display
+void ExitProgram(char message[255]);                    //Exit and display something
+void GetInput();                                        //Get user input
+void InitCurses();                                      //Start up ncurses
+void LoadLevel(char levelfile[100]);                    //Load level into memory
+void MainLoop();                                        //Main program function
+void MoveGhosts();                                      //Update Ghosts' location
+void MovePacman();                                      //Update Pacman's location
+void PauseGame();                                       //Pause
 
 //For ncurses
 WINDOW * win;
@@ -40,7 +41,7 @@ enum { Wall = 1, Normal, Pellet, PowerUp, GhostWall, Ghost1, Ghost2, Ghost3, Gho
 int Loc[5][2] = { 0 };					//Location of Ghosts and Pacman
 int Dir[5][2] = { 0 };					//Direction of Ghosts and Pacman
 int StartingPoints[5][2] = { 0 };			//Default location in case Pacman/Ghosts die
-int Invincible = 0;
+int Invincible = 0;					//Check for invincibility
 int Food = 0;						//Number of pellets left in level
 int Level[29][28] = { 0 };				//Main level array
 int LevelNumber = 0;					//What level number are we on?
@@ -62,18 +63,23 @@ int main(int argc, char *argv[100]) {
 		MainLoop();
 	}
         
-	//If not, use default levels
-	else {  
+	//If not, display intro screen then use default levels
+	else {
+		//Show intro "movie"
+		IntroScreen();
+
 		j = 1;
-		//The want to start at a level 1-9
+		//They want to start at a level 1-9
 		if(argc > 1)
 			for(LevelNumber = '1'; LevelNumber <= '9'; LevelNumber++)
 				if(LevelNumber == argv[1][0]) j = LevelNumber - '0';
 
 		//Load 9 levels, 1 by 1, if you can beat all 9 levels in a row, you're awesome
 		for(LevelNumber = j; LevelNumber < 10; LevelNumber++) {
-			LevelFile[36] = '0'; LevelFile[37] = LevelNumber + '0';
+                        LevelFile[strlen(LevelFile) - 6] = '0';
+			LevelFile[strlen(LevelFile) - 5] = LevelNumber + '0';
 			LoadLevel(LevelFile);
+			Invincible = 0;			//Reset invincibility
 			MainLoop();
 		}
 
@@ -134,10 +140,10 @@ void CheckCollision() {
 void CheckScreenSize() {
         //Make sure the window is big enough
         int h, w; getmaxyx(stdscr, h, w);
-        if((h < 32) || (w < 28)) {
+        if((h < 32) || (w < 29)) {
                 endwin();
                 fprintf(stderr, "\nSorry.\n");
-                fprintf(stderr, "To play Pacman for Console, your console window must be at least 32x28\n");
+                fprintf(stderr, "To play Pacman for Console, your console window must be at least 32x29\n");
                 fprintf(stderr, "Please resize your window/resolution and re-run the game.\n\n");
                 exit(0);
         }
@@ -287,10 +293,74 @@ void InitCurses() {
 	init_pair(Pacman,    COLOR_YELLOW,  COLOR_BLACK);
 }
 
+void IntroScreen() {
+	int a = 0;
+	int b = 23;
+
+	a=getch();
+	a=getch();
+	a=getch();
+
+	mvwprintw(win, 20, 8, "Press any key...");
+
+	//Scroll Pacman to middle of screen
+	for(a = 0; a < 13; a++) {
+		if(getch()!=ERR) return;
+		wattron(win, COLOR_PAIR(Pacman));
+		mvwprintw(win, 8, a, " C");
+		wrefresh(win);
+		usleep(100000);
+	}
+
+	//Show "Pacman"
+	wattron(win, COLOR_PAIR(Pacman));
+	mvwprintw(win, 8, 12, "PACMAN");
+	wrefresh(win);
+	usleep(1000000);
+
+	//Ghosts Chase Pacman
+	for(a = 0; a < 23; a++) {
+		if(getch()!=ERR) return;
+		wattron(win, COLOR_PAIR(Pellet)); mvwprintw(win, 13, 23, "*");
+		wattron(win, COLOR_PAIR(Pacman)); mvwprintw(win, 13, a, " C");
+		wattron(win, COLOR_PAIR(Ghost1)); mvwprintw(win, 13, a-3, " &");
+		wattron(win, COLOR_PAIR(Ghost3)); mvwprintw(win, 13, a-5, " &");
+		wattron(win, COLOR_PAIR(Ghost2)); mvwprintw(win, 13, a-7, " &");
+		wattron(win, COLOR_PAIR(Ghost4)); mvwprintw(win, 13, a-9, " &");
+		wrefresh(win);
+		usleep(100000);
+	}
+
+	usleep(150000);
+
+	//Pacman Chases Ghosts
+	for(a = 25; a > 2; a--) {
+		if(getch()!=ERR) return;
+		wattron(win, COLOR_PAIR(Pellet)); mvwprintw(win, 13, 23, " ");
+
+		//Make ghosts half as fast
+		if(a%2) b--;
+
+		wattron(win, COLOR_PAIR(BlueGhost)); mvwprintw(win, 13, b-9, "& & & &");
+		wattron(win, COLOR_PAIR(Pacman)); mvwprintw(win, 13, b-9+1, " ");
+		wattron(win, COLOR_PAIR(Pacman)); mvwprintw(win, 13, b-9+3, " ");
+		wattron(win, COLOR_PAIR(Pacman)); mvwprintw(win, 13, b-9+5, " ");
+		wattron(win, COLOR_PAIR(Pacman)); mvwprintw(win, 13, b-9+7, " ");
+		wattron(win, COLOR_PAIR(Pacman)); mvwprintw(win, 13, a-3, "C          ");
+
+		wattron(win, COLOR_PAIR(Pellet)); mvwprintw(win, 13, 23, " ");
+		wrefresh(win);
+		usleep(100000);
+	}
+
+}
+
 void LoadLevel(char levelfile[100]) {
 
-	int a = 0; int b = 0; Food = 0;
+	int a = 0; int b = 0;
 	char error[255] = "Cannot find level file: ";
+	FILE *fin;
+	Food = 0;
 
 	//Reset defaults
 	Dir[0][0] =  1; Dir[0][1] =  0;
@@ -300,7 +370,6 @@ void LoadLevel(char levelfile[100]) {
 	Dir[4][0] =  0; Dir[4][1] = -1;
 
         //Open file
-        FILE *fin;
         fin = fopen(levelfile, "r");
 
         //Make sure it didn't fail
@@ -330,6 +399,11 @@ void LoadLevel(char levelfile[100]) {
 }
 
 void MainLoop() {
+
+	DrawWindow();
+	wrefresh(win);
+	wrefresh(status);
+	usleep(1000000);
 
 	do {
 		MovePacman();	DrawWindow();	CheckCollision();
