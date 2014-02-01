@@ -236,26 +236,26 @@ void GetInput() {
 
 	switch (ch) {
 		case KEY_UP:    case 'w': case 'W':
-			if((Level[Loc[4][0] - 1][Loc[4][1]] != 1)
-			&& (Level[Loc[4][0] - 1][Loc[4][1]] != 4))
+			if((Level[(Loc[4][0]-1) % 29][Loc[4][1]] != 1)
+			&& (Level[(Loc[4][0]-1) % 29][Loc[4][1]] != 4))
 				{ Dir[4][0] = -1; Dir[4][1] =  0; }
 			break;
 
 		case KEY_DOWN:  case 's': case 'S':
-			if((Level[Loc[4][0] + 1][Loc[4][1]] != 1)
-			&& (Level[Loc[4][0] + 1][Loc[4][1]] != 4))
+			if((Level[(Loc[4][0]+1) % 29][Loc[4][1]] != 1)
+			&& (Level[(Loc[4][0]+1) % 29][Loc[4][1]] != 4))
 				{ Dir[4][0] =  1; Dir[4][1] =  0; }
 			break;
 
 		case KEY_LEFT:  case 'a': case 'A':
-			if((Level[Loc[4][0]][Loc[4][1] - 1] != 1)
-			&& (Level[Loc[4][0]][Loc[4][1] - 1] != 4))
+			if((Level[Loc[4][0]][(Loc[4][1]-1) % 28] != 1)
+			&& (Level[Loc[4][0]][(Loc[4][1]-1) % 28] != 4))
 				{ Dir[4][0] =  0; Dir[4][1] = -1; }
 			break;
 
 		case KEY_RIGHT: case 'd': case 'D':
-			if((Level[Loc[4][0]][Loc[4][1] + 1] != 1)
-			&& (Level[Loc[4][0]][Loc[4][1] + 1] != 4))
+			if((Level[Loc[4][0]][(Loc[4][1]+1) % 28] != 1)
+			&& (Level[Loc[4][0]][(Loc[4][1]+1) % 28] != 4))
 				{ Dir[4][0] =  0; Dir[4][1] =  1; }
 			break;
 
