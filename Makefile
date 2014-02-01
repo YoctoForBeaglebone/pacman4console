@@ -1,6 +1,6 @@
 all:
-	gcc -lncurses pacman.c     -o pacman
-	gcc -lncurses pacmanedit.c -o pacmanedit
+	gcc pacman.c     -o pacman     $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -lncurses
+	gcc pacmanedit.c -o pacmanedit $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -lncurses
 
 install:	all
 	cp pacman /usr/local/bin
