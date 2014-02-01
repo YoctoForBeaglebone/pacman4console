@@ -7,6 +7,7 @@ all:
 	gcc pacmanedit.c -o pacmanedit -DDATAROOTDIR=\"$(datarootdir)\" $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -lncurses
 
 install:	all
+	mkdir -p $(DESTDIR)$(bindir)
 	cp pacman $(DESTDIR)$(bindir)
 	cp pacmanedit $(DESTDIR)$(bindir)
 	mkdir -p $(DESTDIR)$(datarootdir)/pacman
