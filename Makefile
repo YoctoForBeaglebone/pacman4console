@@ -27,6 +27,6 @@ uninstall:
 	if [ -e $(DESTDIR)$(datarootdir)/pacman/Levels/ ] ; then rmdir $(DESTDIR)$(datarootdir)/pacman/Levels/ ; fi
 	if [ -e $(DESTDIR)$(datarootdir)/pacman/ ] ; then rmdir $(DESTDIR)$(datarootdir)/pacman/ ; fi
 
-clean:	uninstall
+clean:
 	rm -f pacman
 	rm -f pacmanedit
