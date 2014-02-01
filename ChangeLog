@@ -1,5 +1,11 @@
 Pacman for Console
 
+2014-02-01
+
+	- fixed several bugs: buffer overflow, indices out of bounds, error check
+	- improved Makefile: notably a better parameterization allowing a non-admin
+	  installation
+
 2006-12-12 - 1.2
 
     - added a simple level editor
