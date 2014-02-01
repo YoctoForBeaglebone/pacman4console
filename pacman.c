@@ -59,6 +59,7 @@ int main(int argc, char *argv[PACMAN_MAX_PATH_LENGTH]) {
 
 	//If they specified a level to load
 	if((argc > 1) && (strlen(argv[1]) > 1)) {
+		argv[1][PACMAN_MAX_PATH_LENGTH-1] = '\0';
 		LoadLevel(argv[1]);
 		MainLoop();
 	}

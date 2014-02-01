@@ -41,6 +41,11 @@ char filename[PACMAN_MAX_PATH_LENGTH] = "";				//Name of file to load/save
 int main(int argc, char *argv[PACMAN_MAX_PATH_LENGTH]) {
 
 	if((argc > 1) && (strlen(argv[1]) > 1)) {
+		if(argv[1][PACMAN_MAX_PATH_LENGTH-1] != '\0') {
+			argv[1][PACMAN_MAX_PATH_LENGTH-1] = '\0';
+			if(strlen(argv[1]) >= PACMAN_MAX_PATH_LENGTH-1)
+				ExitProgram("Filename too long");
+		}
 		strcpy(filename, argv[1]);
 		LoadLevel();
 
