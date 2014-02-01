@@ -310,21 +310,17 @@ void MainLoop() {
 }
 
 void SaveLevel() {
-	
 	int a=0;
 	int b=0;
 	FILE *fout;
 
 	//Open file
 	fout = fopen(filename, "w");
+	if(!(fout)) ExitProgram("Error while saving");
 
-//	if(!(fout)) {
-//	}
-        for(a = 0; a < 29; a++) {
-        for(b = 0; b < 28; b++) {
+	for(a = 0; a < 29; a++) for(b = 0; b < 28; b++) {
 		fprintf(fout, "%d ", Level[a][b]);
-	}
-	fprintf(fout, "\n");
+		fprintf(fout, "\n");
 	}
 	fprintf(fout, "1");
 	fclose(fout);
