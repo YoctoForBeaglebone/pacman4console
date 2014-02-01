@@ -1,15 +1,15 @@
 Pacman For Console
-------------------
+==================
 Okay, so basically, I got tired of enabling flash on my browser so that I could
 play Pacman.  That, and I was extremely bored one night.  So I decided to make
 my own Pacman... for Console.
 
-Licenseing Information
-----------------------
-See `COPYING` for details on the GNU/GPL.
+Licensing Information
+---------------------
+See `COPYING` for details on the GNU/GPL version 2.
 
-Compile/Install
----------------
+Compile/Install/Run
+-------------------
 To make... gee... let's see... type `make`.  
 To install... type `make install`.  
 To run... type `pacman [level_#]`          where \# is 1-9, for a premade level,  
@@ -21,8 +21,8 @@ i.e.:
 >     pacman /usr/local/share/pacman/Levels/level07.dat  # Play only level 7
 >     echo ":-( I don't like it." && make uninstall      # Uninstall :-(
 
-The ASCII art:
---------------
+The ASCII art
+-------------
 
 + `C`	-	Pacman - That's you.
 + `&`	-	Ghosts - Boo.
@@ -31,8 +31,10 @@ The ASCII art:
 +	Wall - No one can walk through it.
 +	Blocker - A.K.A. Ghost wall. Only the Ghosts can walk through this.
 
-13 Basics Playing Rules
------------------------
+![See the screenshot.](screenshot.png "Screenshot")
+
+13 Basic Playing Rules
+----------------------
 In case you don't know the rules of Pacman (rules I programmed in), here are
 most of them:
 
@@ -55,8 +57,12 @@ most of them:
     the opposite side.
 13. Each character can only go in one X or Y direction at a time.
 
+The keys used are UP, DOWN, LEFT, RIGHT or W, S, A, D.
+
 To make your own levels, see `Levels/README`.
 
 Contact Information
 -------------------
 Send comments and levels you have made to `doctormike@gmail.com`.
+
+There is a [homepage](https://sites.google.com/site/doctormike/pacman.html).
