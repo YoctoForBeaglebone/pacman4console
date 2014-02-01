@@ -12,8 +12,8 @@ install:	all
 	cp pacmanedit $(DESTDIR)$(bindir)
 	mkdir -p $(DESTDIR)$(datarootdir)/pacman
 	cp -fR Levels/ $(DESTDIR)$(datarootdir)/pacman/
-	chown root:games $(DESTDIR)$(bindir)/pacman
-	chown root:games $(DESTDIR)$(datarootdir)/pacman -R
+	-chown root:games $(DESTDIR)$(bindir)/pacman
+	-chown root:games $(DESTDIR)$(datarootdir)/pacman -R
 	chmod 750 $(DESTDIR)$(bindir)/pacman
 	chmod 750 $(DESTDIR)$(bindir)/pacmanedit
 	chmod 750 $(DESTDIR)$(datarootdir)/pacman/ -R
