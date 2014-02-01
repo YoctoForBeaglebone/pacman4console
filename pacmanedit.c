@@ -15,15 +15,18 @@
 #include <sys/timeb.h>
 #include "pacman.h"
 
-void CheckScreenSize();                                 //Make sure resolution is at least 32x29
-void CreateWindows(int y, int x, int y0, int x0);       //Make ncurses windows
-void DrawWindow();                                      //Refresh display
-void ExitProgram(char message[255]);                    //Exit gracefully
-void GetInput();                                        //Get user input
-void InitCurses();                                      //Start up ncurses
-void LoadLevel();                                       //Load level into memory
-void MainLoop();                                        //Main loop
-void SaveLevel();					//Save level to specified file
+#define FILE_ERR "You must specify a file to use (load and save)"
+#define SAVE_ERR "Error while saving"
+
+void CheckScreenSize();                             //Make sure resolution is at least 32x29
+void CreateWindows(int y, int x, int y0, int x0);   //Make ncurses windows
+void DrawWindow();                                  //Refresh display
+void ExitProgram(const char *message);              //Exit gracefully
+void GetInput();                                    //Get user input
+void InitCurses();                                  //Start up ncurses
+void LoadLevel();                                   //Load level into memory
+void MainLoop();                                    //Main loop
+void SaveLevel();                                   //Save level to specified file
 
 //For ncurses
 WINDOW * win;
@@ -36,17 +39,12 @@ enum { Wall = 1, Normal, Pellet, PowerUp, GhostWall, Ghost1, Ghost2, Ghost3, Gho
 int Level[29][28] = { 0 };				//Main level array
 int Loc[6][2] = { 0 };					//Ghosts, Pacman, and cursor locations
 int tleft = 0;						//How long left for invincibility
-char filename[PACMAN_MAX_PATH_LENGTH] = "";				//Name of file to load/save
+char *filename = NULL;				//Name of file to load/save
 
-int main(int argc, char *argv[PACMAN_MAX_PATH_LENGTH]) {
+int main(int argc, char *argv[]) {
 
 	if((argc > 1) && (strlen(argv[1]) > 1)) {
-		if(argv[1][PACMAN_MAX_PATH_LENGTH-1] != '\0') {
-			argv[1][PACMAN_MAX_PATH_LENGTH-1] = '\0';
-			if(strlen(argv[1]) >= PACMAN_MAX_PATH_LENGTH-1)
-				ExitProgram("Filename too long");
-		}
-		strcpy(filename, argv[1]);
+		filename = argv[1];
 		LoadLevel();
 
 		InitCurses();
@@ -59,7 +57,7 @@ int main(int argc, char *argv[PACMAN_MAX_PATH_LENGTH]) {
 		MainLoop();
 	}
 	else
-		ExitProgram("You must specify a file to use (load and save)");
+		ExitProgram(FILE_ERR);
 
 }
 
@@ -125,18 +123,17 @@ void DrawWindow() {
 	wrefresh(win);
 }
 
-void ExitProgram(char message[255]) {
-        endwin();
+void ExitProgram(const char *message) {
+	endwin();
 
 	//Must save file
-	if(message[0]=='s') {
+	if(!message)
 		printf("\n\nFile saved as: %s\n", filename);
-	}
 
 	else
-	        printf("%s\n\n", message);
+		printf("%s\n\n", message);
 
-        exit(0);
+	exit(0);
 }
 
 void GetInput() {
@@ -178,7 +175,7 @@ void GetInput() {
 		case 'q': case 'Q':
 			//Save and exit
 			SaveLevel();
-			ExitProgram("s");
+			ExitProgram(NULL);
 			break;
 
 		//Draw a blank space
@@ -271,11 +268,11 @@ void LoadLevel() {
 	int a = 0; int b = 0;
 	FILE *fin;
 
-        //Open file
-        fin = fopen(filename, "r");
+	//Open file
+	fin = fopen(filename, "r");
 
-        //File doesn't exist, start new
-        if(!(fin)) {
+	//File doesn't exist, start new
+	if(!(fin)) {
 		for(a=0; a<28; a++) { Level[a][0]=1; Level[a][27]=1; }
 		for(a=0; a<28; a++) { Level[0][a]=1; Level[28][a]=1; }
 		Loc[0][0]=2; Loc[0][1]=2;		Loc[1][0]=2; Loc[1][1]=4;
@@ -288,18 +285,16 @@ void LoadLevel() {
 		Level[Loc[4][0]][Loc[4][1]]=9;
 	}
 	else {
-
-	        //Open file and load the level into the array
-	        for(a = 0; a < 29; a++)
-	        for(b = 0; b < 28; b++) {
-                        fscanf(fin, "%d", &Level[a][b]);
+		//Open file and load the level into the array
+		for(a = 0; a < 29; a++) for(b = 0; b < 28; b++) {
+			fscanf(fin, "%d", &Level[a][b]);
 			if(Level[a][b] == 5) { Loc[0][0]=a; Loc[0][1]=b; }
 			if(Level[a][b] == 6) { Loc[1][0]=a; Loc[1][1]=b; }
 			if(Level[a][b] == 7) { Loc[2][0]=a; Loc[2][1]=b; }
 			if(Level[a][b] == 8) { Loc[3][0]=a; Loc[3][1]=b; }
 			if(Level[a][b] == 9) { Loc[4][0]=a; Loc[4][1]=b; }
-                }
-        }
+		}
+	}
 }
 
 void MainLoop() {
@@ -316,7 +311,7 @@ void SaveLevel() {
 
 	//Open file
 	fout = fopen(filename, "w");
-	if(!(fout)) ExitProgram("Error while saving");
+	if(!(fout)) ExitProgram(SAVE_ERR);
 
 	for(a = 0; a < 29; a++) for(b = 0; b < 28; b++) {
 		fprintf(fout, "%d ", Level[a][b]);

@@ -15,20 +15,25 @@
 #include <sys/timeb.h>
 #include "pacman.h"
 
-void IntroScreen();                                     //Show introduction screen and menu
-void CheckCollision();                                  //See if Pacman and Ghosts collided
-void CheckScreenSize();                                 //Make sure resolution is at least 32x29
-void CreateWindows(int y, int x, int y0, int x0);       //Make ncurses windows
-void Delay();                                           //Slow down game for better control
-void DrawWindow();                                      //Refresh display
-void ExitProgram(char message[100+PACMAN_MAX_PATH_LENGTH]);//Exit and display something
-void GetInput();                                        //Get user input
-void InitCurses();                                      //Start up ncurses
-void LoadLevel(char levelfile[PACMAN_MAX_PATH_LENGTH]); //Load level into memory
-void MainLoop();                                        //Main program function
-void MoveGhosts();                                      //Update Ghosts' location
-void MovePacman();                                      //Update Pacman's location
-void PauseGame();                                       //Pause
+#define EXIT_MSG "Good bye!"
+#define END_MSG "Game Over"
+#define QUIT_MSG "Bye"
+#define LEVEL_ERR "Cannot find level file: "
+
+void IntroScreen();                                 //Show introduction screen and menu
+void CheckCollision();                              //See if Pacman and Ghosts collided
+void CheckScreenSize();                             //Make sure resolution is at least 32x29
+void CreateWindows(int y, int x, int y0, int x0);   //Make ncurses windows
+void Delay();                                       //Slow down game for better control
+void DrawWindow();                                  //Refresh display
+void ExitProgram(const char *message);              //Exit and display something
+void GetInput();                                    //Get user input
+void InitCurses();                                  //Start up ncurses
+void LoadLevel(char *levelfile);                    //Load level into memory
+void MainLoop();                                    //Main program function
+void MoveGhosts();                                  //Update Ghosts' location
+void MovePacman();                                  //Update Pacman's location
+void PauseGame();                                   //Pause
 
 //For ncurses
 WINDOW * win;
@@ -48,7 +53,7 @@ int LevelNumber = 0;					//What level number are we on?
 int GhostsInARow = 0;					//Keep track of how many points to give for eating ghosts
 int tleft = 0;						//How long left for invincibility
 
-int main(int argc, char *argv[PACMAN_MAX_PATH_LENGTH]) {
+int main(int argc, char *argv[]) {
 
 	int j = 0;
 	srand( (unsigned)time( NULL ) );
@@ -59,7 +64,6 @@ int main(int argc, char *argv[PACMAN_MAX_PATH_LENGTH]) {
 
 	//If they specified a level to load
 	if((argc > 1) && (strlen(argv[1]) > 1)) {
-		argv[1][PACMAN_MAX_PATH_LENGTH-1] = '\0';
 		LoadLevel(argv[1]);
 		MainLoop();
 	}
@@ -77,7 +81,7 @@ int main(int argc, char *argv[PACMAN_MAX_PATH_LENGTH]) {
 
 		//Load 9 levels, 1 by 1, if you can beat all 9 levels in a row, you're awesome
 		for(LevelNumber = j; LevelNumber < 10; LevelNumber++) {
-                        LevelFile[strlen(LevelFile) - 6] = '0';
+			LevelFile[strlen(LevelFile) - 6] = '0';
 			LevelFile[strlen(LevelFile) - 5] = LevelNumber + '0';
 			LoadLevel(LevelFile);
 			Invincible = 0;			//Reset invincibility
@@ -86,7 +90,7 @@ int main(int argc, char *argv[PACMAN_MAX_PATH_LENGTH]) {
 
 	}
 
-	ExitProgram("Good bye!");
+	ExitProgram(EXIT_MSG);
 }
 
 void CheckCollision() {
@@ -117,7 +121,7 @@ void CheckCollision() {
 				Lives--;
 				usleep(1000000);
 
-				if(Lives == -1) ExitProgram("Game Over");
+				if(Lives == -1) ExitProgram(END_MSG);
 
 				//Reset level
 				for(a = 0; a < 5; a++) {
@@ -218,7 +222,7 @@ void DrawWindow() {
 	wrefresh(win);
 }
 
-void ExitProgram(char message[100+PACMAN_MAX_PATH_LENGTH]) {
+void ExitProgram(const char *message) {
 	endwin();
 	printf("%s\n", message);
 	exit(0);
@@ -265,7 +269,7 @@ void GetInput() {
 			break;
 
 		case 'q': case 'Q':
-			ExitProgram("Bye");
+			ExitProgram(QUIT_MSG);
 			break;
 
 	}
@@ -356,10 +360,11 @@ void IntroScreen() {
 
 }
 
-void LoadLevel(char levelfile[PACMAN_MAX_PATH_LENGTH]) {
+void LoadLevel(char *levelfile) {
 
 	int a = 0; int b = 0;
-	char error[100+PACMAN_MAX_PATH_LENGTH] = "Cannot find level file: ";
+	size_t l;
+	char error[sizeof(LEVEL_ERR)+255] = LEVEL_ERR;
 	FILE *fin;
 	Food = 0;
 
@@ -370,32 +375,37 @@ void LoadLevel(char levelfile[PACMAN_MAX_PATH_LENGTH]) {
 	Dir[3][0] =  0; Dir[3][1] =  1;
 	Dir[4][0] =  0; Dir[4][1] = -1;
 
-        //Open file
-        fin = fopen(levelfile, "r");
+	//Open file
+	fin = fopen(levelfile, "r");
 
-        //Make sure it didn't fail
-        if(!(fin)) { strcat(error, levelfile); ExitProgram(error); }
+	//Make sure it didn't fail
+	if(!(fin)) {
+		l = sizeof(error)-strlen(error)-1;
+		strncat(error, levelfile, l);
+		if(strlen(levelfile) > l)
+			error[sizeof(error)-2] = '.', error[sizeof(error)-3] = '.', error[sizeof(error)-4] = '.';
+		ExitProgram(error);
+	}
 
-        //Open file and load the level into the array
-        for(a = 0; a < 29; a++) {
-                for(b = 0; b < 28; b++) {
-                        fscanf(fin, "%d", &Level[a][b]);
-			if(Level[a][b] == 2) { Food++; }
+	//Open file and load the level into the array
+	for(a = 0; a < 29; a++) {
+		for(b = 0; b < 28; b++) {
+			fscanf(fin, "%d", &Level[a][b]);
+			if(Level[a][b] == 2) Food++;
 
-			if(Level[a][b] == 5) { Loc[0][0] = a; Loc[0][1] = b; Level[a][b] = 0;}
-			if(Level[a][b] == 6) { Loc[1][0] = a; Loc[1][1] = b; Level[a][b] = 0;}
-			if(Level[a][b] == 7) { Loc[2][0] = a; Loc[2][1] = b; Level[a][b] = 0;}
-			if(Level[a][b] == 8) { Loc[3][0] = a; Loc[3][1] = b; Level[a][b] = 0;}
-			if(Level[a][b] == 9) { Loc[4][0] = a; Loc[4][1] = b; Level[a][b] = 0;}
-                }
-        }
+			if(Level[a][b] == 5) { Loc[0][0] = a; Loc[0][1] = b; Level[a][b] = 0; }
+			if(Level[a][b] == 6) { Loc[1][0] = a; Loc[1][1] = b; Level[a][b] = 0; }
+			if(Level[a][b] == 7) { Loc[2][0] = a; Loc[2][1] = b; Level[a][b] = 0; }
+			if(Level[a][b] == 8) { Loc[3][0] = a; Loc[3][1] = b; Level[a][b] = 0; }
+			if(Level[a][b] == 9) { Loc[4][0] = a; Loc[4][1] = b; Level[a][b] = 0; }
+		}
+	}
 
-        fscanf(fin, "%d", &LevelNumber);
+	fscanf(fin, "%d", &LevelNumber);
 
 	//Save initial character points for if Pacman or Ghosts die
-	for(a = 0; a < 5; a++) {
-		StartingPoints[a][0] = Loc[a][0]; StartingPoints[a][1] = Loc[a][1];
-	}
+	for(a = 0; a < 5; a++)
+		StartingPoints[a][0] = Loc[a][0], StartingPoints[a][1] = Loc[a][1];
 
 }
 
