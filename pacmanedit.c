@@ -36,9 +36,9 @@ enum { Wall = 1, Normal, Pellet, PowerUp, GhostWall, Ghost1, Ghost2, Ghost3, Gho
 int Level[29][28] = { 0 };				//Main level array
 int Loc[6][2] = { 0 };					//Ghosts, Pacman, and cursor locations
 int tleft = 0;						//How long left for invincibility
-char filename[255] = "";				//Name of file to load/save
+char filename[PACMAN_MAX_PATH_LENGTH] = "";				//Name of file to load/save
 
-int main(int argc, char *argv[100]) {
+int main(int argc, char *argv[PACMAN_MAX_PATH_LENGTH]) {
 
 	if((argc > 1) && (strlen(argv[1]) > 1)) {
 		strcpy(filename, argv[1]);

@@ -3,7 +3,10 @@
 #	define DATAROOTDIR "/usr/local/share"
 #endif
 #define LEVELS_FILE DATAROOTDIR "/pacman/Levels/level__.dat"
-char LevelFile[50] = LEVELS_FILE;					//Locations of default levels
+#ifndef PACMAN_MAX_PATH_LENGTH
+#	define PACMAN_MAX_PATH_LENGTH 255
+#endif
+char LevelFile[PACMAN_MAX_PATH_LENGTH] = LEVELS_FILE;			//Locations of default levels
 int FreeLife = 1000;							//Starting points for free life
 int Points = 0;								//Initial points
 int Lives = 3;								//Number of lives you start with

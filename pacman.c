@@ -21,10 +21,10 @@ void CheckScreenSize();                                 //Make sure resolution i
 void CreateWindows(int y, int x, int y0, int x0);       //Make ncurses windows
 void Delay();                                           //Slow down game for better control
 void DrawWindow();                                      //Refresh display
-void ExitProgram(char message[255]);                    //Exit and display something
+void ExitProgram(char message[100+PACMAN_MAX_PATH_LENGTH]);//Exit and display something
 void GetInput();                                        //Get user input
 void InitCurses();                                      //Start up ncurses
-void LoadLevel(char levelfile[100]);                    //Load level into memory
+void LoadLevel(char levelfile[PACMAN_MAX_PATH_LENGTH]); //Load level into memory
 void MainLoop();                                        //Main program function
 void MoveGhosts();                                      //Update Ghosts' location
 void MovePacman();                                      //Update Pacman's location
@@ -48,7 +48,7 @@ int LevelNumber = 0;					//What level number are we on?
 int GhostsInARow = 0;					//Keep track of how many points to give for eating ghosts
 int tleft = 0;						//How long left for invincibility
 
-int main(int argc, char *argv[100]) {
+int main(int argc, char *argv[PACMAN_MAX_PATH_LENGTH]) {
 
 	int j = 0;
 	srand( (unsigned)time( NULL ) );
@@ -217,7 +217,7 @@ void DrawWindow() {
 	wrefresh(win);
 }
 
-void ExitProgram(char message[255]) {
+void ExitProgram(char message[100+PACMAN_MAX_PATH_LENGTH]) {
 	endwin();
 	printf("%s\n", message);
 	exit(0);
@@ -355,10 +355,10 @@ void IntroScreen() {
 
 }
 
-void LoadLevel(char levelfile[100]) {
+void LoadLevel(char levelfile[PACMAN_MAX_PATH_LENGTH]) {
 
 	int a = 0; int b = 0;
-	char error[255] = "Cannot find level file: ";
+	char error[100+PACMAN_MAX_PATH_LENGTH] = "Cannot find level file: ";
 	FILE *fin;
 	Food = 0;
 
